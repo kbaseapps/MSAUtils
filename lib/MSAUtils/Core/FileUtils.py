@@ -4,7 +4,6 @@ import os
 import shutil
 import uuid
 
-from installed_clients.AbstractHandleClient import AbstractHandle
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.KBaseReportClient import KBaseReport
 
@@ -17,7 +16,7 @@ class FileUtil:
             validates params passed to import_matrix_from_excel method
         """
         # check for required parameters
-        for p in ['structure_name', 'workspace_name']:
+        for p in ['msa_name', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -98,7 +97,7 @@ class FileUtil:
         else:
             workspace_id = workspace_name
 
-        data, message = self._file_to_data(file_path)
+        data, message = self._fasta_file_to_data(file_path)
         data['description'] = params.get('description', '')
         data['sequence_type'] = params.get('sequence_type', '')
         logging.info(data)
@@ -131,7 +130,7 @@ class FileUtil:
         row_labels = obj_data.get('default_row_labels', {})
         file_path = os.path.join(self.scratch, f'{obj_name}.fasta')
 
-        with open(file_path) as outfile:
+        with open(file_path, 'w') as outfile:
             for key in keys:
                 # header
                 outfile.write(f'>{key} {row_labels.get(key, "")}\n')

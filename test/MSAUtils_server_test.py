@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+import json
 import os
+import shutil
 import time
 import unittest
 from configparser import ConfigParser
 
+from MSAUtils.authclient import KBaseAuth as _KBaseAuth
 from MSAUtils.MSAUtilsImpl import MSAUtils
 from MSAUtils.MSAUtilsServer import MethodContext
-from MSAUtils.authclient import KBaseAuth as _KBaseAuth
-
 from installed_clients.WorkspaceClient import Workspace
 
 
@@ -46,22 +47,65 @@ class MSAUtilsTest(unittest.TestCase):
         cls.wsName = "test_ContigFilter_" + str(suffix)
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
+        test_file = "MSA.fasta"
+        cls.fasta_file_path = os.path.join(cls.scratch, test_file)
+        shutil.copy(os.path.join('data', test_file), cls.fasta_file_path)
+
+        file_path = 'data/MSA.json'
+        data = json.load(open(file_path))
+        info = cls.wsClient.save_objects({
+            'workspace': cls.wsName,
+            'objects': [
+                {'type': 'KBaseTrees.MSA',
+                 'name': os.path.splitext(os.path.basename(file_path))[0],
+                 'data': data}]
+        })[0]
+        cls.msa_ref = f"{info[6]}/{info[0]}/{info[4]}"
+
     @classmethod
     def tearDownClass(cls):
         if hasattr(cls, 'wsName'):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
 
-    # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    def test_your_method(self):
-        # Prepare test objects in workspace if needed using
-        # self.getWsClient().save_objects({'workspace': self.getWsName(),
-        #                                  'objects': []})
-        #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_MSAUtils(self.ctx, {'workspace_name': self.wsName,
-                                                             'parameter_1': 'Hello World!'})
+    def test_import_msa_fasta(self):
+        ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
+                                                          'input_file_path': self.fasta_file_path,
+                                                          'msa_name': 'test_msa',
+                                                          'description': 'Foo!'})
+
+    def test_msa_to_fasta(self):
+        ret = self.serviceImpl.msa_to_fasta_file(self.ctx, {'destination_dir': "./",
+                                                            'input_ref': self.msa_ref})
+
+    def test_msa_to_clustal(self):
+        with self.assertRaises(NotImplementedError):
+            ret = self.serviceImpl.msa_to_clustal_file(self.ctx, {'destination_dir': "./",
+                                                                  'input_ref': self.msa_ref})
+
+    def test_export_fasta(self):
+        ret = self.serviceImpl.export_msa_as_fasta_file(self.ctx, {'input_ref': self.msa_ref})
+
+    def test_export_clustal(self):
+        with self.assertRaises(NotImplementedError):
+            ret = self.serviceImpl.export_msa_as_clustal_file(self.ctx, {'input_ref': self.msa_ref})
+
+    def test_bad_input(self):
+        with self.assertRaisesRegex(ValueError, "parameter is required, but missing"):
+            ret = self.serviceImpl.import_msa_file(self.ctx, {'msa_name': 'test_msa',
+                                                              'input_file_path': "FOO!"})
+
+        with self.assertRaisesRegex(ValueError, "parameter is required, but missing"):
+            ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
+                                                              'input_file_path': "FOO!"})
+
+        with self.assertRaisesRegex(ValueError, "supply either a input_shock_id or input_file_path"):
+            ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
+                                                              'msa_name': "test_msa"})
+
+        with self.assertRaisesRegex(ValueError, "destination_dir not in supplied params"):
+            ret = self.serviceImpl.msa_to_fasta_file(self.ctx, {'input_ref': self.msa_ref})
+
+        with self.assertRaisesRegex(ValueError, "input_ref not in supplied params"):
+            ret = self.serviceImpl.export_msa_as_fasta_file(self.ctx, {})
+

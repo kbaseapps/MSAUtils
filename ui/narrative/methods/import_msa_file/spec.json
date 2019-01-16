@@ -19,26 +19,6 @@
       "text_options" : {}
     },
     {
-      "id" : "sequence_type",
-      "optional" : false,
-      "advanced" : false,
-      "allow_multiple" : false,
-      "default_values" : [ "protein" ],
-      "field_type" : "dropdown",
-      "dropdown_options":{
-          "options": [{
-              "value": "dna",
-              "display": "DNA"
-          }, {
-              "value": "protein",
-              "display": "Protein"
-          }, {
-              "value": "rna",
-              "display": "RNA"
-          }]
-      }
-    },
-    {
       "id" : "description",
       "optional" : true,
       "advanced" : false,

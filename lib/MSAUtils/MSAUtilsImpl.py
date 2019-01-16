@@ -24,7 +24,7 @@ class MSAUtils:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/MSAUtils.git"
-    GIT_COMMIT_HASH = "f33d1d9d21c06cbaf4df6d3408f5d25eac54ab0d"
+    GIT_COMMIT_HASH = "41e07529405d281ee758c7e259160c6ea898b5db"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -52,15 +52,16 @@ class MSAUtils:
            of String, parameter "input_staging_file_path" of String,
            parameter "msa_name" of String, parameter "description" of String,
            parameter "workspace_name" of String
-        :returns: instance of type "ImportMSAOutput" -> structure: parameter
-           "report_name" of String, parameter "report_ref" of type "obj_ref"
-           (An X/Y/Z style reference @id ws), parameter "structure_obj_ref"
-           of type "obj_ref" (An X/Y/Z style reference @id ws)
+        :returns: instance of type "ImportMSAOutput" (@optional report_name
+           report_ref) -> structure: parameter "report_name" of String,
+           parameter "report_ref" of type "obj_ref" (An X/Y/Z style reference
+           @id ws), parameter "msa_obj_ref" of type "obj_ref" (An X/Y/Z style
+           reference @id ws)
         """
         # ctx is the context object
         # return variables are: result
         #BEGIN import_msa_file
-        logging.info('Starting √ with params:\n{}'.format(params))
+        logging.info('Starting ??? with params:\n{}'.format(params))
         result = self.futil.import_fasta_file(params)
         #END import_msa_file
 
