@@ -3,7 +3,7 @@
 import logging
 import os
 
-from installed_clients.KBaseReportClient import KBaseReport
+from MSAUtils.Core.FileUtils import FileUtil
 #END_HEADER
 
 
@@ -33,8 +33,11 @@ class MSAUtils:
     # be found
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
-        self.callback_url = os.environ['SDK_CALLBACK_URL']
-        self.shared_folder = config['scratch']
+        self.config = config
+        self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
+        self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
+        self.scratch = config['scratch']
+        self.futil = FileUtil(self.config)
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -57,6 +60,8 @@ class MSAUtils:
         # ctx is the context object
         # return variables are: result
         #BEGIN import_msa_file
+        logging.info('Starting √ with params:\n{}'.format(params))
+        result = self.futil.import_fasta_file(params)
         #END import_msa_file
 
         # At some point might do deeper type checking...
@@ -77,6 +82,8 @@ class MSAUtils:
         # ctx is the context object
         # return variables are: files
         #BEGIN msa_to_fasta_file
+        logging.info('Starting msa_to_fasta_file with params:\n{}'.format(params))
+        files = self.futil.msa_to_fasta_file(params)
         #END msa_to_fasta_file
 
         # At some point might do deeper type checking...
@@ -97,6 +104,8 @@ class MSAUtils:
         # ctx is the context object
         # return variables are: files
         #BEGIN msa_to_clustal_file
+        logging.info('Starting msa_to_clustal_file with params:\n{}'.format(params))
+        files = self.futil.msa_to_clustal_file(params)
         #END msa_to_clustal_file
 
         # At some point might do deeper type checking...
@@ -117,6 +126,8 @@ class MSAUtils:
         # ctx is the context object
         # return variables are: output
         #BEGIN export_msa_as_fasta_file
+        logging.info('Starting export_msa_as_fasta_file with params:\n{}'.format(params))
+        output = self.futil.export_file(params, file_type='fasta')
         #END export_msa_as_fasta_file
 
         # At some point might do deeper type checking...
@@ -137,6 +148,8 @@ class MSAUtils:
         # ctx is the context object
         # return variables are: output
         #BEGIN export_msa_as_clustal_file
+        logging.info('Starting export_msa_as_clustal_file with params:\n{}'.format(params))
+        output = self.futil.export_file(params, file_type='clustal')
         #END export_msa_as_clustal_file
 
         # At some point might do deeper type checking...

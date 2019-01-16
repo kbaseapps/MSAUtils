@@ -22,10 +22,11 @@ module MSAUtils {
       string workspace_name;
   } ImportMSAParams;
 
+  /* @optional report_name report_ref */
   typedef structure {
       string report_name;
       obj_ref report_ref;
-      obj_ref structure_obj_ref;
+      obj_ref msa_obj_ref;
   } ImportMSAOutput;
 
   /* import_msa_file: import a MSA from FASTA*/
