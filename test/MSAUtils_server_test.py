@@ -79,16 +79,14 @@ class MSAUtilsTest(unittest.TestCase):
                                                             'input_ref': self.msa_ref})
 
     def test_msa_to_clustal(self):
-        with self.assertRaises(NotImplementedError):
-            ret = self.serviceImpl.msa_to_clustal_file(self.ctx, {'destination_dir': "./",
-                                                                  'input_ref': self.msa_ref})
+        ret = self.serviceImpl.msa_to_clustal_file(self.ctx, {'destination_dir': "./",
+                                                              'input_ref': self.msa_ref})
 
     def test_export_fasta(self):
         ret = self.serviceImpl.export_msa_as_fasta_file(self.ctx, {'input_ref': self.msa_ref})
 
     def test_export_clustal(self):
-        with self.assertRaises(NotImplementedError):
-            ret = self.serviceImpl.export_msa_as_clustal_file(self.ctx, {'input_ref': self.msa_ref})
+        ret = self.serviceImpl.export_msa_as_clustal_file(self.ctx, {'input_ref': self.msa_ref})
 
     def test_bad_input(self):
         with self.assertRaisesRegex(ValueError, "parameter is required, but missing"):

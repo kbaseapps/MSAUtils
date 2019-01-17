@@ -2,6 +2,12 @@ import logging
 import os
 import uuid
 
+from Bio import AlignIO
+from Bio.Align import MultipleSeqAlignment
+from Bio.Alphabet import generic_dna, generic_protein
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.KBaseReportClient import KBaseReport
 
@@ -143,7 +149,7 @@ class FileUtil:
 
         return returnVal
 
-    def msa_to_fasta_file(self, params):
+    def msa_to_file(self, params, file_type='fasta'):
         if "input_ref" not in params:
             raise ValueError("input_ref not in supplied params")
         if "destination_dir" not in params:
@@ -152,14 +158,14 @@ class FileUtil:
         obj_name, obj_data = self._get_object(params)
         keys = obj_data.get('row_order', obj_data['alignment'].keys)
         row_labels = obj_data.get('default_row_labels', {})
-        file_path = os.path.join(self.scratch, f'{obj_name}.fasta')
+        file_path = os.path.join(self.scratch, f'{obj_name}.{file_type}')
+        seq_type = generic_protein if obj_data.get('sequence_type') == "protein" else generic_dna
 
-        with open(file_path, 'w') as outfile:
-            for key in keys:
-                # header
-                outfile.write(f'>{key} {row_labels.get(key, "")}\n')
-                # sequence
-                outfile.write(f"{obj_data['alignment'][key]}\n")
+        msa = MultipleSeqAlignment(
+            [SeqRecord(Seq(obj_data['alignment'][key], seq_type),
+                       id=key, description=row_labels[key])
+             for key in keys])
+        AlignIO.write(msa, file_path, file_type)
 
         return {'file_path': file_path}
 
@@ -170,11 +176,6 @@ class FileUtil:
         params['destination_dir'] = os.path.join(self.scratch, str(uuid.uuid4()))
         os.mkdir(params['destination_dir'])
 
-        if file_type == 'fasta':
-            file_path = self.msa_to_fasta_file(params)['file_path']
-        elif file_type == 'clustal':
-            file_path = self.msa_to_clustal_file(params)['file_path']
-        else:
-            raise ValueError(f"Invalid file type: {file_type}. Must be 'fasta' or 'clustal")
+        file_path = self.msa_to_file(params, file_type)['file_path']
 
         return {'shock_id': self._upload_to_shock(file_path)}

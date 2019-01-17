@@ -84,7 +84,7 @@ class MSAUtils:
         # return variables are: files
         #BEGIN msa_to_fasta_file
         logging.info('Starting msa_to_fasta_file with params:\n{}'.format(params))
-        files = self.futil.msa_to_fasta_file(params)
+        files = self.futil.msa_to_file(params, 'fasta')
         #END msa_to_fasta_file
 
         # At some point might do deeper type checking...
@@ -106,7 +106,7 @@ class MSAUtils:
         # return variables are: files
         #BEGIN msa_to_clustal_file
         logging.info('Starting msa_to_clustal_file with params:\n{}'.format(params))
-        files = self.futil.msa_to_clustal_file(params)
+        files = self.futil.msa_to_file(params, 'clustal')
         #END msa_to_clustal_file
 
         # At some point might do deeper type checking...
