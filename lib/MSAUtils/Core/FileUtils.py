@@ -73,8 +73,9 @@ class FileUtil:
                 data['row_order'].append(key)
                 seq = []
             else:
-                seq.append(line)
+                seq.append(line.strip())
         data['alignment'][key] = "".join(seq)
+        data['sequence_type'] = 'protein'
 
         message = f'A Multiple Sequence Alignment with {len(data["alignment"])} sequences and ' \
                   f'an alignment length of {data["alignment_length"]} was produced'
@@ -123,7 +124,6 @@ class FileUtil:
 
         data, message = self._fasta_file_to_data(file_path)
         data['description'] = params.get('description', '')
-        data['sequence_type'] = params.get('sequence_type', '')
         logging.info(data)
 
         info = self.dfu.save_objects({
