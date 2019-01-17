@@ -69,7 +69,7 @@ class FileUtil:
                     # TODO: infer sequence_type
                     data['alignment'][key] = seq_str
 
-                key, addnl = line.strip("> ").split(" ", 1)
+                key = line.strip("> ").split(" ", 1)[0]
                 data['row_order'].append(key)
                 seq = []
             else:
