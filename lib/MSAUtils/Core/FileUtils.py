@@ -1,7 +1,5 @@
-import hashlib
 import logging
 import os
-import shutil
 import uuid
 
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -35,7 +33,7 @@ class FileUtil:
             error_msg += "or input_staging_file_path"
             raise ValueError(error_msg)
 
-        return file_path, params.get('workspace_name'), params.get('structure_name')
+        return file_path, params['workspace_name'], params['msa_name']
 
     def _upload_to_shock(self, file_path):
         """
@@ -54,7 +52,33 @@ class FileUtil:
 
     def _fasta_file_to_data(self, file_path):
         """Do the FASTA conversion"""
-        raise NotImplementedError
+        data = {'alignment': {},
+                'row_order': []}
+        key = None
+        seq = []
+        for line in open(file_path):
+            if line.startswith(">"):
+                if key:
+                    seq_str = "".join(seq)
+                    if 'alignment_length' not in data:
+                        data['alignment_length'] = len(seq_str)
+                    elif len(seq_str) != data['alignment_length']:
+                        raise ValueError(f"Inconsistent alignment lengths: {key} had a length of "
+                                         f"{len(seq_str)} but a length of "
+                                         f"{data['alignment_length']} was expected")
+                    # TODO: infer sequence_type
+                    data['alignment'][key] = seq_str
+
+                key, addnl = line.strip("> ").split(" ", 1)
+                data['row_order'].append(key)
+                seq = []
+            else:
+                seq.append(line)
+        data['alignment'][key] = "".join(seq)
+
+        message = f'A Multiple Sequence Alignment with {len(data["alignment"])} sequences and ' \
+                  f'an alignment length of {data["alignment_length"]} was produced'
+
         return data, message
 
     def _generate_report(self, msa_ref, workspace_name, message):
