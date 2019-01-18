@@ -52,7 +52,7 @@ class FileUtil:
             'pack': 'gzip',
             'make_handle': True,
         }
-        shock_id = self.dfu.file_to_shock(file_to_shock_params)['handle']['hid']
+        shock_id = self.dfu.file_to_shock(file_to_shock_params)['shock_id']
 
         return shock_id
 
