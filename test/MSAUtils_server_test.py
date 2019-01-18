@@ -47,9 +47,17 @@ class MSAUtilsTest(unittest.TestCase):
         cls.wsName = "test_ContigFilter_" + str(suffix)
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
+        cls.prepareTestData()
+
+    @classmethod
+    def prepareTestData(cls):
         test_file = "MSA.fasta"
         cls.fasta_file_path = os.path.join(cls.scratch, test_file)
         shutil.copy(os.path.join('data', test_file), cls.fasta_file_path)
+
+        test_file = "MSA.clustal"
+        cls.clustal_file_path = os.path.join(cls.scratch, test_file)
+        shutil.copy(os.path.join('data', test_file), cls.clustal_file_path)
 
         file_path = 'data/MSA.json'
         data = json.load(open(file_path))
@@ -73,6 +81,12 @@ class MSAUtilsTest(unittest.TestCase):
                                                           'input_file_path': self.fasta_file_path,
                                                           'msa_name': 'test_msa',
                                                           'description': 'Foo!'})
+
+    def test_import_msa_clustal(self):
+        ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
+                                                          'input_file_path': self.clustal_file_path,
+                                                          'msa_name': 'test_msa',
+                                                          'file_format': 'clustal'})
 
     def test_msa_to_fasta(self):
         ret = self.serviceImpl.msa_to_fasta_file(self.ctx, {'destination_dir': "./",
@@ -100,6 +114,12 @@ class MSAUtilsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "supply either a input_shock_id or input_file_path"):
             ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
                                                               'msa_name': "test_msa"})
+
+        with self.assertRaisesRegex(ValueError, "Unknown format"):
+            ret = self.serviceImpl.import_msa_file(self.ctx, {'workspace_name': self.wsName,
+                                                              'input_file_path': self.fasta_file_path,
+                                                              'msa_name': 'test_msa',
+                                                              'file_format': 'foo'})
 
         with self.assertRaisesRegex(ValueError, "destination_dir not in supplied params"):
             ret = self.serviceImpl.msa_to_fasta_file(self.ctx, {'input_ref': self.msa_ref})

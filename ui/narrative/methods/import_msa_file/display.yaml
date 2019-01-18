@@ -29,6 +29,14 @@ parameters :
         long-hint  : |
             FASTA format only
 
+    file_format:
+        ui-name : |
+            File Format
+        short-hint : |
+            The format of the aligment file.
+        long-hint  : |
+            The format of the aligment file. Acceptible types may be forund here: https://biopython.org/wiki/AlignIO
+
     description:
       ui-name : |
           Description

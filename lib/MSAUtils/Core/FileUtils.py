@@ -56,32 +56,31 @@ class FileUtil:
 
         return shock_id
 
-    def _fasta_file_to_data(self, file_path):
-        """Do the FASTA conversion"""
-        data = {'alignment': {},
-                'row_order': []}
-        key = None
-        seq = []
-        for line in open(file_path):
-            if line.startswith(">"):
-                if key:
-                    seq_str = "".join(seq)
-                    if 'alignment_length' not in data:
-                        data['alignment_length'] = len(seq_str)
-                    elif len(seq_str) != data['alignment_length']:
-                        raise ValueError(f"Inconsistent alignment lengths: {key} had a length of "
-                                         f"{len(seq_str)} but a length of "
-                                         f"{data['alignment_length']} was expected")
-                    # TODO: infer sequence_type
-                    data['alignment'][key] = seq_str
+    @staticmethod
+    def _infer_seq_type(msa):
+        dna_set = {"A", "C", "G", "T", "-"}
+        seq_chars = {char for record in msa for char in record.seq}
+        if seq_chars - dna_set:
+            return "protein"
+        else:
+            return "dna"
 
-                key = line.strip("> ").split(" ", 1)[0]
-                data['row_order'].append(key)
-                seq = []
-            else:
-                seq.append(line.strip())
-        data['alignment'][key] = "".join(seq)
-        data['sequence_type'] = 'protein'
+    def _file_to_data(self, file_path, format='fasta'):
+        """Do the file conversion"""
+
+        data = {'alignment': {},
+                'default_row_labels': {},
+                'row_order': [],
+                }
+
+        msa = AlignIO.read(file_path, format)
+        data['alignment_length'] = msa.get_alignment_length()
+        data['sequence_type'] = self._infer_seq_type(msa)
+
+        for record in msa:
+            data['row_order'].append(record.id)
+            data['default_row_labels'][record.id] = record.description
+            data['alignment'][record.id] = str(record.seq)
 
         message = f'A Multiple Sequence Alignment with {len(data["alignment"])} sequences and ' \
                   f'an alignment length of {data["alignment_length"]} was produced'
@@ -128,9 +127,8 @@ class FileUtil:
         else:
             workspace_id = workspace_name
 
-        data, message = self._fasta_file_to_data(file_path)
+        data, message = self._file_to_data(file_path, params.get('file_format', 'fasta'))
         data['description'] = params.get('description', '')
-        logging.info(data)
 
         info = self.dfu.save_objects({
             'id': workspace_id,

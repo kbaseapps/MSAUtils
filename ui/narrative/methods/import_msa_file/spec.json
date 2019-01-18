@@ -19,6 +19,32 @@
       "text_options" : {}
     },
     {
+      "id" : "file_format",
+      "optional" : false,
+      "advanced" : false,
+      "allow_multiple" : false,
+      "default_values" : [ "fasta" ],
+      "field_type" : "dropdown",
+      "dropdown_options":{
+        "options": [{
+            "value": "fasta",
+            "display": "FASTA"
+        }, {
+            "value": "clustal",
+            "display": "Clustal"
+        }, {
+            "value": "emboss",
+            "display": "Emboss"
+        }, {
+            "value": "phylip",
+            "display": "PHYLIP"
+        }, {
+            "value": "stockholm",
+            "display": "Stockholm"
+        }]
+      }
+    },
+    {
       "id" : "description",
       "optional" : true,
       "advanced" : false,
@@ -52,6 +78,10 @@
         {
           "input_parameter": "input_staging_file_path",
           "target_property": "input_staging_file_path"
+        },
+        {
+          "input_parameter": "file_format",
+          "target_property": "file_format"
         },
         {
           "input_parameter": "description",

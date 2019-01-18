@@ -17,6 +17,7 @@ module MSAUtils {
       string input_shock_id;
       string input_file_path;
       string input_staging_file_path;
+      string file_format;
       string msa_name;
       string description;
       string workspace_name;
