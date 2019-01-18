@@ -1,6 +1,6 @@
-name     : Import Multiple Sequence Alignment from FASTA File in Staging Area
-subtitle : Import a FASTA file from your staging area into your Narrative as an MSA
-tooltip  : Import a FASTA file from your staging area into your Narrative as an MSA
+name     : Import Multiple Sequence Alignment from File in Staging Area
+subtitle : Import a file from your staging area into your Narrative as an MSA
+tooltip  : Import a file from your staging area into your Narrative as an MSA
 
 icon: data-blue.png
 
@@ -25,9 +25,9 @@ parameters :
         ui-name : |
             File Path
         short-hint : |
-            FASTA format only
+            File Path in Stageing
         long-hint  : |
-            FASTA format only
+            File Path in Stageing
 
     file_format:
         ui-name : |
@@ -55,5 +55,5 @@ parameters :
 
 
 description : |
-    <p> Import an PDB file from your staging area into your Narrative as an ProteinStructure data object.
+    <p> Import a file from your staging area into your Narrative as an Multiple Sequence Alignment data object. Acceptible types may be forund here: https://biopython.org/wiki/AlignIO
     Please see the <a href="http://kbase.us/data-upload-download-guide/">Data Upload/Download Guide</a> for more information. </p>
