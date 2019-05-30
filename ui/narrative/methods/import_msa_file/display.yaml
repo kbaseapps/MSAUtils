@@ -1,6 +1,6 @@
-name     : Import Multiple Sequence Alignment from File in Staging Area
-subtitle : Import a file from your staging area into your Narrative as an MSA
-tooltip  : Import a file from your staging area into your Narrative as an MSA
+name     : Import Multiple Sequence Alignment (MSA) from File in Staging Area
+
+tooltip  : Allows users to import a file from the staging area into a Narrative as a multiple sequence alignment (MSA) data object.
 
 icon: data-blue.png
 
@@ -25,9 +25,7 @@ parameters :
         ui-name : |
             File Path
         short-hint : |
-            File Path in Stageing
-        long-hint  : |
-            File Path in Stageing
+            Select the file path in Stageing.
 
     file_format:
         ui-name : |
@@ -35,25 +33,20 @@ parameters :
         short-hint : |
             The format of the aligment file.
         long-hint  : |
-            The format of the aligment file. Acceptible types may be forund here: https://biopython.org/wiki/AlignIO
+            The format of the alignment file. Acceptable types may be found <a href=”https://biopython.org/wiki/AlignIO”>here</a>.
 
     description:
       ui-name : |
           Description
       short-hint : |
-          Describe the Alignment
-      long-hint  : |
-          Describe the Alignment
+          Describe the alignment.
 
     msa_name :
         ui-name : |
             Object Name
         short-hint : |
-            Provide a name for the MSA that will be created by this importer
-        long-hint : |
-            Provide a name for the MSA that will be created by this importer
+            Provide a name for the MSA data object that will be created by this importer.
 
 
 description : |
-    <p> Import a file from your staging area into your Narrative as an Multiple Sequence Alignment data object. Acceptible types may be forund here: https://biopython.org/wiki/AlignIO
-    Please see the <a href="http://kbase.us/data-upload-download-guide/">Data Upload/Download Guide</a> for more information. </p>
+    <p>This App allows users to import a file from the staging area into a Narrative as a Multiple Sequence Alignment (MSA) data object. Acceptable sequence alignment types may be found <a href=”https://biopython.org/wiki/AlignIO”>here</a>. For further information on importing data, please see the <a href="http://kbase.us/data-upload-download-guide/">Data Upload/Download Guide</a>.</p>
